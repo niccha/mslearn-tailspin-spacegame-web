@@ -44,13 +44,6 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build the project - $(buildConfiguration)'
-  inputs:
-    command: 'build'
-    arguments: '--no-restore --configuration $(buildConfiguration)'
-    projects: '**/*.csproj'
-
 - template: templates/build.yml
   parameters:
     buildConfiguration: 'Debug'
@@ -58,3 +51,9 @@ steps:
 - template: templates/build.yml
   parameters:
     buildConfiguration: 'Release'
+
+# Use the PublishBuildArtifacts@1 task to publish the .zip file to Azure Pipelines. 
+# The condition argument specifies to run the task only when the previous task succeeds.
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  condition: succeeded()
